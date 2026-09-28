@@ -146,7 +146,25 @@ function renderOrderQuestion(q,a){
  a.append(note,answerBox,wordBox,check);
 }
 function checkOrderReady(q){}
-function normalize(s){return String(s||"").trim().replace(/[　\s]/g,"").replace(/[。．.!！?？]/g,"").toLowerCase().replace(/’/g,"'")}
+function normalize(s){
+ let v=String(s||"").trim().replace(/[　\s]/g,"").replace(/[。．.!！?？]/g,"").toLowerCase().replace(/’/g,"'");
+ // be動詞の短縮形／非短縮形を同じものとして判定する
+ const beForms={
+   "i'm":"iam","im":"iam",
+   "you're":"youare","youre":"youare",
+   "he's":"heis","hes":"heis",
+   "she's":"sheis","shes":"sheis",
+   "it's":"itis","its":"itis",
+   "we're":"weare","were":"weare",
+   "they're":"theyare","theyre":"theyare",
+   "who's":"whois","whos":"whois",
+   "isn't":"isnot","isnt":"isnot",
+   "aren't":"arenot","arent":"arenot",
+   "i'mnot":"iamnot","imnot":"iamnot"
+ };
+ for(const [from,to] of Object.entries(beForms)) v=v.replaceAll(from,to);
+ return v;
+}
 function isCorrect(user,q){
  const u=normalize(user), a=normalize(q.answer);
  if(q.type==="正誤") return u===a;
